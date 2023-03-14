@@ -16,11 +16,13 @@ const brandRoutes=require('./routes/brand.routes')
 const referenceRoutes=require('./routes/reference.routes')
 const employeeRoutes=require('./routes/employee.routes')
 const equipmentRoutes=require('./routes/equipment.routes')
+const assignmentRoutes=require('./routes/assignment.routes')
 
 app.use('/api/v1/brands',brandRoutes)
 app.use('/api/v1/references',referenceRoutes)
 app.use('/api/v1/employees',employeeRoutes)
 app.use('/api/v1/equipments',equipmentRoutes)
+app.use('/api/v1/assign',assignmentRoutes)
 
 /*Server and DB*/
 db()

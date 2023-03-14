@@ -26,6 +26,10 @@ const equipmentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Reference',
     required: true
+  },
+  isAssigned:{
+    type:Boolean,
+    default:false
   }
 })
 
