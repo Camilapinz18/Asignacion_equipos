@@ -59,9 +59,9 @@ const deleteReference = async (req, res) => {
         const result = await Reference.deleteOne({ _id: id })
 
         if (result.deletedCount === 0) {
-            res.status(404).send({ msg: 'Brand not found' })
+            res.status(404).send({ msg: 'Reference not found' })
         } else {
-            res.status(200).send({ msg: 'Brand successfully deleted' })
+            res.status(200).send({ msg: 'Reference successfully deleted' })
         }
     } catch (error) {
         console.log('deleteReference Error:', error)
