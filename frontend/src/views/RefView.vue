@@ -5,31 +5,24 @@
                 <button class="btn btn-primary"  @click="showForm()">Agregar</button>
             </div>
             <div class="input-group my-3">
-                <input type="text" class="form-control" placeholder="Buscar...">
+                <input type="text" class="form-control" placeholder="Buscar..." v-model="searchElement">
                 <button class="btn btn-outline-secondary"  ><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
             <div class="border rounded my-2">
                 <table class="table  ">
                     <thead>
                         <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                            <th scope="col">Nombre de Referencia</th> 
+                            <th scope="col">Opción</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
+                    <tbody v-for="item in buscar" :key="item">
+                        <tr> 
+                            <td>{{ item.nombre }}</td>
+                            <td>
+                                <button class="btn btn-primary "><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="btn btn-danger "><i class="fa-solid fa-trash"></i></button>
+                            </td> 
                         </tr> 
                     </tbody>
                 </table>
@@ -63,8 +56,13 @@
     
  <script setup>
     import Modal from '@/components/Modal.vue';
+    import {ref, computed} from 'vue'
     import {storeToRefs} from 'pinia'
     import {useAppStore} from '@/store/appStore.js'
+    import {useRefStore} from '@/store/refStore.js'
+
+    
+    let searchElement = ref("")
 
     const useApp = useAppStore()
     //funciones
@@ -72,9 +70,44 @@
     //variables
     let {showModal} = storeToRefs(useApp)
 
+    const useRef = useRefStore()
+    //funciones
+    const {getRefs} = useRef
+    //variables
+    let {Refs} = storeToRefs(useRef)
+
+
     const showForm = () =>{
         openModal()
     }
+
+    let buscar = computed(() => { 
+           console.log(searchElement.value)
+           if (searchElement.value === '' || searchElement.value === undefined) {
+               return Refs.value
+           }
+           let matches = 0
+           if(searchElement.value.length>0){
+              
+                return Refs.value.filter(item => {  
+                    if (
+                        (item.nombre.toLowerCase().includes(searchElement.value.toLowerCase()) 
+                        )
+                        && matches < 10
+                    ) { 
+                        matches++ 
+                        return item
+                    }
+                     
+                })
+                         
+           }else{
+               return []
+           }    
+
+       
+    })
+
  </script>
  
  <style scoped>

@@ -3,7 +3,7 @@
         <div class=" col-10 text-center bg-white"> 
             <div class="input-group my-3"> 
                 <button class="btn btn-primary" @click="showForm()" >Registrar Empleado</button>
-                <p>{{ nombre }}</p>
+                 
             </div>
             <div class="input-group my-3">
                 <input type="text" class="form-control" placeholder="Buscar empleado..." v-model="searchElement">
@@ -91,23 +91,27 @@
     import {ref, computed} from 'vue'
     import {storeToRefs} from 'pinia'
     import {useAppStore} from '@/store/appStore.js'
+    import { useEmployeStore } from '@/store/employeStore';
 
-    let Users = ref([
-    {nombres: "ander steven", apellidos:"cord riv", email:"ande@gmail.com", telefono:"3101010", direccion:"calle 1#2-3"},
-    {nombres: "Cami asd", apellidos:"Pinzó dsf", email:"cami@gmail.com", telefono:"3101111", direccion:"calle 2#3-4"},
-    {nombres: "julanito jj", apellidos:"peres hh", email:"julanito@gmail.com", telefono:"3111010", direccion:"calle 3#4-5"}
-    ])
     
-    let searchElement = ref("")
+    //appStore
     const useApp = useAppStore()
     //funciones
     const {openModal} = useApp
     //variables
     let {showModal} = storeToRefs(useApp)
+    
+    //employeStore
+    const useEmploye = useEmployeStore()
+    const {getUsers, addUser, updateUser, deleteUser} = useEmploye
+    let {Users} = storeToRefs(useEmploye)
 
     const showForm = () =>{
         openModal()
     }
+
+
+    let searchElement = ref("")
 
     let buscar = computed(() => { 
            console.log(searchElement.value)

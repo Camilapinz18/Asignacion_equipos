@@ -45,9 +45,7 @@
     const useApp = useAppStore()
     //funciones
     const {openModal} = useApp 
-    
-    
-    
+     
     const showForm = () =>{
         openModal()
     }
