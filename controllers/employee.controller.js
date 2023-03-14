@@ -16,11 +16,12 @@ const getAllEmployees = async (req, res) => {
 }
 
 const createEmployee = async (req, res) => {
-
-  const identification = req.body.identification.trim();
+  const identification = req.body.identification.trim()
 
   try {
-    const userExists = await Employee.findOne({ identification: identification })
+    const userExists = await Employee.findOne({
+      identification: identification
+    })
 
     if (userExists) {
       res.status(409).send({ msg: 'The employee already exists' })
@@ -31,10 +32,12 @@ const createEmployee = async (req, res) => {
         surname: req.body.surname.toLowerCase().trim(),
         address: req.body.address.toLowerCase().trim(),
         phone: req.body.phone.trim(),
-        email: req.body.email.trim(),
+        email: req.body.email.trim()
       })
       const savedEmployee = await newEmployee.save()
-      res.status(200).send({ msg: 'Employee successfully added ', savedEmployee })
+      res
+        .status(200)
+        .send({ msg: 'Employee successfully added ', savedEmployee })
     }
   } catch (error) {
     console.log('createEmployee Error:', error)
@@ -42,16 +45,37 @@ const createEmployee = async (req, res) => {
 }
 
 const updateEmployee = async (req, res) => {
-  const { newName, newSurname, newAddress, newEmail, newPhone, identification } = req.body
+  const {
+    newName,
+    newSurname,
+    newAddress,
+    newEmail,
+    newPhone,
+    identification
+  } = req.body
 
   try {
-    const employeeExists = await Employee.findOne({ identification: identification })
+    const employeeExists = await Employee.findOne({
+      identification: identification
+    })
 
     if (!employeeExists) {
       res.status(404).send({ msg: 'Employee not found' })
     } else {
-      const employeeUpdated = await Employee.findOneAndUpdate({ identification: identification }, { name: newName, surname: newSurname }, { new: true })
-      res.status(200).send({ msg: 'Employee updated successfully', employeeUpdated })
+      const employeeUpdated = await Employee.findOneAndUpdate(
+        { identification: identification },
+        {
+          name: newName,
+          surname: newSurname,
+          address: newAddress,
+          email: newEmail,
+          phone: newPhone
+        },
+        { new: true }
+      )
+      res
+        .status(200)
+        .send({ msg: 'Employee updated successfully', employeeUpdated })
     }
   } catch (error) {
     console.log('updateEmployee Error:', error)

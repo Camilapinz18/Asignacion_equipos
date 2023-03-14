@@ -48,8 +48,9 @@ const createEquipment = async (req, res) => {
           })
           const savedEquipment = await newEquipment.save()
 
-          await Equipment.populate(savedEquipment, { path: 'brand_id reference_id' })
-
+          await Equipment.populate(savedEquipment, {
+            path: 'brand_id reference_id'
+          })
 
           res
             .status(200)
@@ -65,26 +66,48 @@ const createEquipment = async (req, res) => {
 }
 
 const updateEquipment = async (req, res) => {
-  const { newName, id } = req.body
+  const { name, serial, description, isNewEquipment, brand_id, reference_id } =
+    req.body
+
+  const id = req.body.id.trim()
+  console.log('brandExists>>>>>>>>>>>>>', id)
 
   try {
-    const brandExists = await Brand.findById(id)
+    const equipmentExists = await Equipment.findById(id)
 
-    if (!brandExists) {
-      res.status(404).send({ msg: 'Brand not found' })
+    if (!equipmentExists) {
+      res.status(404).send({ msg: 'Equipment not found' })
     } else {
-      const brandUpdated = await Brand.findByIdAndUpdate(
-        id,
-        { name: newName },
-        { new: true }
-      )
-      res
-        .status(200)
-        .send({ msg: 'Brand updated successfully', brand: brandUpdated })
+      try {
+        const brandExists = await Brand.findById(brand_id)
+        const referenceExists = await Reference.findById(reference_id)
+        console.log('referenceExists', referenceExists)
+
+        if (brandExists && referenceExists) {
+          const equipmentUpdated = await Equipment.findOneAndUpdate(
+            { _id: id },
+            {
+              name: name,
+              serial: serial,
+              description: description,
+              isNewEquipment: isNewEquipment,
+              brand_id: brandExists._id,
+              reference_id: referenceExists._id
+            },
+            { new: true }
+          )
+          res
+            .status(200)
+            .send({ msg: 'Equipment updated successfully', equipmentUpdated })
+        }
+      } catch (error) {
+        console.log('updateEquipment Error:', error)
+        res.status(404).send({ msg: 'Brand or reference not found' })
+      }
     }
   } catch (error) {
-    console.log('updateBrand Error:', error)
-    res.status(500).send({ msg: 'Error updating the brand' })
+    console.log('updateEquipment Error:', error)
+    res.status(500).send({ msg: 'Error updating the equipment. Invalid id' })
   }
 }
 
