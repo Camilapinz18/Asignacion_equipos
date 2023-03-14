@@ -14,9 +14,11 @@ app.use(morgan('dev'))
 /*Routes*/
 const brandRoutes=require('./routes/brand.routes')
 const referenceRoutes=require('./routes/reference.routes')
+const employeeRoutes=require('./routes/employee.routes')
 
 app.use('/api/v1/brands',brandRoutes)
 app.use('/api/v1/references',referenceRoutes)
+app.use('/api/v1/employees',employeeRoutes)
 
 /*Server and DB*/
 db()
