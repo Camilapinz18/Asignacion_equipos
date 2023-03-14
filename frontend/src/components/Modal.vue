@@ -9,7 +9,7 @@
                               <div class="modal-body rounded-4 " > 
                                     <div class="d-grid gap-2 d-md-flex justify-content-md-end"> 
                                         <button type="button" class="btn-danger  text-end py-0 px-2 rounded-circle" 
-                                        >X</button>
+                                        @click="showForm()">X</button>
                                     </div>
     
                                     <div  class="col text-dark">
@@ -37,10 +37,21 @@
   </template>
   
   <script setup> 
-    import {onMounted} from 'vue'
-    
-    
+    import {useAppStore} from '@/store/appStore.js'
+
+   //props
     const props = defineProps(['tittle'])
+   
+    const useApp = useAppStore()
+    //funciones
+    const {openModal} = useApp 
+    
+    
+    
+    const showForm = () =>{
+        openModal()
+    }
+    
      
   </script>
   

@@ -39,27 +39,13 @@
          
         <!-- -->
         <div v-if="showModal ">
-            <Modal tittle="Registro de usuario">
+            <Modal tittle="Registro de marcas">
                 <div class="row justify-content-between text-start">
-                    <div class="form-group col-6 flex-column d-flex"> 
-                        <label class="form-control-label px-3 tex">Nombre: </label> 
+                    <div class="form-group col-12 flex-column d-flex"> 
+                        <label class="form-control-label px-3 tex">Nombre de la Nueva marca: </label> 
                         <input type="text" > 
-                    </div>
-                    <div class="form-group col-6 flex-column d-flex">
-                        <label class="form-control-label px-3">Apellido:</label> 
-                        <input type="text"  > 
-                    </div>
-                </div>
-                <div class="row justify-content-between text-start">
-                    <div class="form-group col-6 flex-column d-flex"> 
-                        <label class="form-control-label px-3 tex">Nombre: </label> 
-                        <input type="text" > 
-                    </div>
-                    <div class="form-group col-6 flex-column d-flex">
-                        <label class="form-control-label px-3">Apellido:</label> 
-                        <input type="text"  > 
-                    </div>  
-                </div>
+                    </div> 
+                </div> 
                 
                 <div class="row justify-content-end">
                     <div class="form-group col-sm-3"> 
@@ -77,13 +63,17 @@
  
  <script setup>
     import Modal from '@/components/Modal.vue';
-    import { ref } from 'vue';
+    import {storeToRefs} from 'pinia'
+    import {useAppStore} from '@/store/appStore.js'
 
-    let showModal = ref(false)
+    const useApp = useAppStore()
+    //funciones
+    const {openModal} = useApp
+    //variables
+    let {showModal} = storeToRefs(useApp)
 
     const showForm = () =>{
-        showModal.value=true
-        console.log(showModal)
+        openModal()
     }
  </script>
  

@@ -2,36 +2,38 @@
     <div class="row d-flex justify-content-center vh-100 bg-light">
         <div class=" col-10 text-center bg-white"> 
             <div class="input-group my-3"> 
-                <button class="btn btn-primary" @click="showForm()" >Registrar Empleao</button>
+                <button class="btn btn-primary" @click="showForm()" >Registrar Empleado</button>
                 <p>{{ nombre }}</p>
             </div>
             <div class="input-group my-3">
-                <input type="text" class="form-control" placeholder="Buscar empleado...">
-                <button class="btn btn-outline-secondary" ><i class="fa-solid fa-magnifying-glass"></i></button>
+                <input type="text" class="form-control" placeholder="Buscar empleado..." v-model="searchElement">
+                <button class="btn btn-outline-secondary"  ><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
             <div class="border rounded my-2">
                 <table class="table  ">
                     <thead>
-                        <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <tr> 
+                        <th scope="col">Nombres</th>
+                        <th scope="col">Apellidos</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Teléfono</th>
+                        <th scope="col">Dirección</th>
+                        <th scope="col">Opción</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
+                    <tbody v-for="(user, index) in buscar" :key="index">
+                        <tr> 
+                            <td>{{ user.nombres}}</td>
+                            <td>{{ user.apellidos}}</td>
+                            <td>{{ user.email}}</td>
+                            <td>{{ user.telefono}}</td>
+                            <td>{{ user.direccion}}</td> 
+                            <td>
+                                <button class="btn btn-primary "><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="btn btn-danger "><i class="fa-solid fa-trash"></i></button>
+                            </td> 
                         </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr> 
+                         
                     </tbody>
                 </table>
 
@@ -40,22 +42,32 @@
             <div v-if="showModal ">
                 <Modal tittle="Registro de usuario">
                     <div class="row justify-content-between text-start">
-                        <div class="form-group col-6 flex-column d-flex"> 
-                            <label class="form-control-label px-3 tex">Nombre: </label> 
+                        <div class="form-group col-12 flex-column d-flex"> 
+                            <label class="form-control-label px-3 tex">Nombres: </label> 
                             <input type="text" v-model="nombre" > 
                         </div>
-                        <div class="form-group col-6 flex-column d-flex">
-                            <label class="form-control-label px-3">Apellido:</label> 
+                    </div>
+                    <div class="row justify-content-between text-start">
+                        <div class="form-group col-12 flex-column d-flex">
+                            <label class="form-control-label px-3">Apellidos:</label> 
                             <input type="text"  > 
                         </div>
                     </div>
                     <div class="row justify-content-between text-start">
-                        <div class="form-group col-6 flex-column d-flex"> 
-                            <label class="form-control-label px-3 tex">Nombre: </label> 
+                        <div class="form-group col-12 flex-column d-flex"> 
+                            <label class="form-control-label px-3 tex">Email: </label> 
                             <input type="text" > 
-                        </div>
-                        <div class="form-group col-6 flex-column d-flex">
-                            <label class="form-control-label px-3">Apellido:</label> 
+                        </div> 
+                    </div>
+                    <div class="row justify-content-between text-start">
+                        <div class="form-group col-12 flex-column d-flex"> 
+                            <label class="form-control-label px-3 tex">Teléfono: </label> 
+                            <input type="text" > 
+                        </div> 
+                    </div>
+                    <div class="row justify-content-between text-start">
+                        <div class="form-group col-12 flex-column d-flex">
+                            <label class="form-control-label px-3">Dirección:</label> 
                             <input type="text"  > 
                         </div>  
                     </div>
@@ -75,16 +87,58 @@
  </template>
  
  <script setup>
-    import Modal from '@/components/Modal.vue';
-    import { ref } from 'vue';
+    import Modal from '@/components/Modal.vue';  
+    import {ref, computed} from 'vue'
+    import {storeToRefs} from 'pinia'
+    import {useAppStore} from '@/store/appStore.js'
 
-    let nombre = ref("")
-    let showModal = ref(false)
+    let Users = ref([
+    {nombres: "ander steven", apellidos:"cord riv", email:"ande@gmail.com", telefono:"3101010", direccion:"calle 1#2-3"},
+    {nombres: "Cami asd", apellidos:"Pinzó dsf", email:"cami@gmail.com", telefono:"3101111", direccion:"calle 2#3-4"},
+    {nombres: "julanito jj", apellidos:"peres hh", email:"julanito@gmail.com", telefono:"3111010", direccion:"calle 3#4-5"}
+    ])
+    
+    let searchElement = ref("")
+    const useApp = useAppStore()
+    //funciones
+    const {openModal} = useApp
+    //variables
+    let {showModal} = storeToRefs(useApp)
 
     const showForm = () =>{
-        showModal.value=true
-        console.log(showModal)
+        openModal()
     }
+
+    let buscar = computed(() => { 
+           console.log(searchElement.value)
+           if (searchElement.value === '' || searchElement.value === undefined) {
+               return Users.value
+           }
+           let matches = 0
+           if(searchElement.value.length>0){
+              
+                return Users.value.filter(item => {  
+                    if (
+                        (item.nombres.toLowerCase().includes(searchElement.value.toLowerCase())||
+                        item.apellidos.toLowerCase().includes(searchElement.value.toLowerCase())||
+                        item.email.toLowerCase().includes(searchElement.value.toLowerCase())||
+                        item.telefono.toLowerCase().includes(searchElement.value.toLowerCase())
+                        )
+                        && matches < 10
+                    ) { 
+                        matches++ 
+                        return item
+                    }
+                     
+                })
+                         
+           }else{
+               return []
+           }    
+
+       
+    })
+
  </script>
  
  <style scoped>

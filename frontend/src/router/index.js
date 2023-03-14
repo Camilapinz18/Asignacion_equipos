@@ -9,7 +9,7 @@ const routes = [
   {
     path: '/marcas',
     name: 'marcas', 
-    component: () => import(/* webpackChunkName: "empleados" */ '../views/MarcasView.vue')
+    component: () => import(/* webpackChunkName: "marcas" */ '../views/MarcasView.vue')
   },
   {
     path: '/ref',
@@ -22,9 +22,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "Equipos" */ '../views/EquiposView.vue')
   },
   {
-    path: '/asignar',
-    name: 'asignar', 
-    component: () => import(/* webpackChunkName: "about" */ '../views/AsignacionView.vue')
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound', 
+    component: () => import(/* webpackChunkName: "about" */ '../views/NotFound.vue')
   },
 ]
 
