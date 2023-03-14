@@ -28,6 +28,7 @@
                             <td>
                                 <button class="btn btn-primary "><i class="fa-solid fa-pen-to-square"></i></button>
                                 <button class="btn btn-danger "><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn btn-success"  @click="showAsig()">Asignar</button>
                             </td> 
                         </tr> 
                     </tbody>
@@ -52,11 +53,27 @@
                         <div class="row justify-content-between text-start">
                             <div class="form-group col-6 flex-column d-flex"> 
                                 <label class="form-control-label px-3 tex">Marca: </label> 
-                                <input type="text" > 
+                                <input type="text" v-model="searchMarca">
+                                <div v-if="BMarcas.length" class="col-2" style="position: absolute; width: 40%; margin-top: 5rem;">
+                                    <ul class="list-group "> 
+                                        <li  class="list-group-item list-group-item-action" v-for="item in BMarcas" :key="item"  @click="selectMarca(item)">
+                                            {{ item.nombre }}
+                                        </li>
+                                    </ul>
+    
+                                </div> 
                             </div>
                             <div class="form-group col-6 flex-column d-flex">
                                 <label class="form-control-label px-3">Referencia:</label> 
-                                <input type="text"  > 
+                                <input type="text" v-model="searchRef" > 
+                                <div v-if="BRefs.length" class="col-2" style="position: absolute; width: 40%; margin-top: 5rem;">
+                                    <ul class="list-group "> 
+                                        <li  class="list-group-item list-group-item-action" v-for="item in BRefs" :key="item"  @click="selectRef(item)">
+                                            {{ item.nombre}}
+                                        </li>
+                                    </ul>
+    
+                                </div> 
                             </div>  
                         </div>
                         
@@ -77,7 +94,15 @@
                         <div class="row justify-content-between text-start">
                             <div class="form-group col-12 flex-column d-flex"> 
                                 <label class="form-control-label px-3 tex">Empleado: </label> 
-                                <input type="text" > 
+                                <input type="text" v-model="searchEmployer"> 
+                                <div v-if="BEmpl.length" class="col-2" style="position: absolute; width: 80%; margin-top: 5rem;">
+                                    <ul class="list-group "> 
+                                        <li  class="list-group-item list-group-item-action" v-for="item in BEmpl" :key="item"  @click="selectEmpl(item)">
+                                            {{ item.nombres}}
+                                        </li>
+                                    </ul>
+    
+                                </div> 
                             </div> 
                         </div> 
                         
@@ -103,6 +128,20 @@
     import {storeToRefs} from 'pinia'
     import {useAppStore} from '@/store/appStore.js'
     import {useDeviceStore} from '@/store/deviceStore.js'
+    import {useBrandStore} from '@/store/brandStore.js'
+    import {useRefStore} from '@/store/refStore.js'
+    import { useEmployeStore } from '@/store/employeStore';
+
+    //refs
+    const useRef = useRefStore()
+    let {Refs} = storeToRefs(useRef)
+    //marcas
+    const useBrand = useBrandStore()
+    let {Marcas} = storeToRefs(useBrand)
+    //empleados
+    const useEmploye = useEmployeStore()
+    let {Users} = storeToRefs(useEmploye)
+
 
     const useApp = useAppStore()
     //funciones
@@ -116,18 +155,41 @@
     //variables
     let {Devices} = storeToRefs(useDevice)
 
+    
+
     let registro = ref(false)
     let asignar = ref(false)
     let searchElement = ref("")
- 
+     
+    let searchMarca = ref(undefined)
+    let searchRef = ref(undefined)
+    let searchEmployer = ref(undefined)
+    
+    const selectMarca = (item)=>{
+        searchMarca.value = item.nombre
+        BMarcas=[]
+    }
+
+    const selectRef = (item)=>{
+        searchRef.value = item.nombre
+        BRefs=[]
+    }
+
+    const selectEmpl = (item)=>{
+        searchEmployer.value = item.nombres 
+        BEmpl=[]
+    }
+
     const showRegis = () =>{
         asignar.value = false
+        registro.value = false
         registro.value = !registro.value
         openModal()
     }
 
     const showAsig = () =>{
         registro.value = false
+        asignar.value = false
         asignar.value = !asignar.value
         openModal()
     }
@@ -163,6 +225,82 @@
 
        
     })
+    
+    let BMarcas = computed(() => { 
+           console.log(searchMarca.value)
+           if (searchMarca.value === '' || searchMarca.value === undefined) {
+               return []
+           }
+           let matches = 0
+           if(searchMarca.value.length>0){
+              
+                return Marcas.value.filter(item => {  
+                    if (item.nombre.toLowerCase().includes(searchMarca.value.toLowerCase()) 
+                        && matches < 10
+                    ) { 
+                        matches++ 
+                        return item
+                    }
+                     
+                })
+                         
+           }else{
+               return []
+           }    
+
+       
+    })
+
+    let BRefs = computed(() => { 
+           console.log(searchRef.value)
+           if (searchRef.value === '' || searchRef.value === undefined) {
+               return []
+           }
+           let matches = 0
+           if(searchRef.value.length>0){
+              
+                return Refs.value.filter(item => {  
+                    if (item.nombre.toLowerCase().includes(searchRef.value.toLowerCase()) 
+                        && matches < 10
+                    ) { 
+                        matches++ 
+                        return item
+                    }
+                     
+                })
+                         
+           }else{
+               return []
+           }    
+
+       
+    })
+
+    let BEmpl = computed(() => { 
+           console.log(searchEmployer.value)
+           if (searchEmployer.value === '' || searchEmployer.value === undefined) {
+               return []
+           }
+           let matches = 0
+           if(searchEmployer.value.length>0){
+              
+                return Users.value.filter(item => {  
+                    if (item.nombres.toLowerCase().includes(searchEmployer.value.toLowerCase()) 
+                        && matches < 10
+                    ) { 
+                        matches++ 
+                        return item
+                    }
+                     
+                })
+                         
+           }else{
+               return []
+           }    
+
+       
+    })
+
 
  </script>
  
