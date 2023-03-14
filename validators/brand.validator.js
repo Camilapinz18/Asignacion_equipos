@@ -8,7 +8,29 @@ const validateCreateBrand = [
     .isEmpty()
     .withMessage('A brand name must be provided to continue')
     .isString(),
+
+
+  (request, response, next) => {
+    validateResult(request, response, next)
+  }
+]
+
+const validateUpdateBrand = [
+  check('newName')
+    .exists()
+    .not()
+    .isEmpty()
+    .withMessage('A brand name must be provided to continue')
+    .isString(),
    
+
+    check('id')
+    .exists()
+    .not()
+    .isEmpty()
+    .withMessage('An id must be provided to continue')
+    .isString(),
+
 
   (request, response, next) => {
     validateResult(request, response, next)
@@ -16,5 +38,6 @@ const validateCreateBrand = [
 ]
 
 module.exports = {
-  validateCreateBrand
+  validateCreateBrand,
+  validateUpdateBrand
 }

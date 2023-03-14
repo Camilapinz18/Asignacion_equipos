@@ -34,22 +34,43 @@ const createBrand = async (req, res) => {
   }
 }
 
-const updateBrand=async(req, res)=>{
+const updateBrand = async (req, res) => {
+  const { newName, id } = req.body
 
-  // console.log("update")
-  // const {brand}=req.body
+  try {
+    const brandExists = await Brand.findById(id)
 
-  // try{
+    if (!brandExists) {
+      res.status(404).send({ msg: 'Brand not found' })
+    } else {
+      const brandUpdated = await Brand.findByIdAndUpdate(id, { name: newName }, { new: true })
+      res.status(200).send({ msg: 'Brand updated successfully', brand: brandUpdated })
+    }
+  } catch (error) {
+    console.log('updateBrand Error:', error)
+    res.status(500).send({ msg: 'Error updating the brand' })
+  }
+}
 
-  // }catch(error){
-  //   console.log("updateBrand Error:",error)
-  // }
+const deleteBrand = async (req, res) => {
+  const { id } = req.body
 
+  try {
+    const result = await Brand.deleteOne({ _id: id })
 
+    if (result.deletedCount === 0) {
+      res.status(404).send({ msg: 'Brand not found' })
+    } else {
+      res.status(200).send({ msg: 'Brand successfully deleted' })
+    }
+  } catch (error) {
+    console.log('deleteBrand Error:', error)
+  }
 }
 
 module.exports = {
   getAllBrands,
   createBrand,
-  updateBrand
+  updateBrand,
+  deleteBrand
 }
