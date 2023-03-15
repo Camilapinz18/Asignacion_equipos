@@ -110,7 +110,7 @@
         name.value = item.name
         id.value = item._id
         edit.value = true
-        console.log(name.value, id.value)
+        //console.log(name.value, id.value)
         openModal()
     }
 
@@ -157,7 +157,7 @@
     }
 
     let buscar = computed(() => { 
-           console.log(searchElement.value)
+           //console.log(searchElement.value)
            if (searchElement.value === '' || searchElement.value === undefined) {
                return Marcas.value
            }

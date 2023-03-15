@@ -107,7 +107,7 @@
         name.value = nameI
         id.value = idI
         edit.value = true
-        console.log(name.value, id.value, edit.value )
+        //console.log(name.value, id.value, edit.value )
         openModal()
     }
 
@@ -158,7 +158,7 @@
     }
 
     let buscar = computed(() => { 
-           console.log(searchElement.value)
+           //.log(searchElement.value)
            if (searchElement.value === '' || searchElement.value === undefined) {
                return Refs.value
            }

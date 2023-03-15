@@ -86,7 +86,7 @@
                         
                         <div class="row justify-content-end">
                             <div class="form-group col-sm-3"> 
-                                <button v-if="!editar" class="btn-block btn-primary" @click="createDevice(name, serial, description, brand_id, reference_id), showForm()">
+                                <button v-if="!editar" class="btn-block btn-primary" @click="createDevice(name, serial, description, brand_id, reference_id)">
                                     Guardar
                                 </button> 
                                 <button v-else class="btn-block btn-success" @click="updateDevice(device_id, name, serial, description, brand_id, reference_id), showForm()">
@@ -220,7 +220,7 @@
             addDevice(name, serial, description, brand_id, reference_id, true)
             showForm()
         }
-        console.log(name, serial, description, brand_id, reference_id)
+        //console.log(name, serial, description, brand_id, reference_id)
     }
 
     
@@ -287,7 +287,7 @@
     }
 
     const showEdit = (id, nombre, marca, referencia, serie, descripcion) =>{  
-        console.log(nombre, serie, marca, referencia)
+        //console.log(nombre, serie, marca, referencia)
         searchRef.value = referencia.name
         reference_id.value = referencia._id
         searchMarca.value = marca.name
@@ -305,12 +305,10 @@
     }
 
     let buscar = computed(() => { 
-           console.log(searchElement.value)
-           
-          
-
+           //console.log(searchElement.value)
+            
            if (searchElement.value === '' || searchElement.value === undefined) {
-            console.log("devices",Devices.value)
+            //console.log("devices",Devices.value)
                return Devices.value
            }
            let matches = 0
@@ -341,7 +339,7 @@
     })
 
     let BMarcas = computed(() => { 
-           console.log(searchMarca.value)  
+           //console.log(searchMarca.value)  
            if (searchMarca.value === '' || searchMarca.value === undefined ) { 
                return []
            }
@@ -366,7 +364,7 @@
     })
 
     let BRefs = computed(() => { 
-           console.log(searchRef.value)
+           //console.log(searchRef.value)
            if (searchRef.value === '' || searchRef.value === undefined) {
                return []
            }
@@ -391,7 +389,7 @@
     })
 
     let BEmpl = computed(() => { 
-        console.log(searchEmployer.value)
+        //console.log(searchEmployer.value)
         if (searchEmployer.value === '' || searchEmployer.value === undefined) {
                return []
            }

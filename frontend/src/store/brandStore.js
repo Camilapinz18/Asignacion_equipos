@@ -15,7 +15,7 @@ export const useBrandStore =  defineStore('brandStore', () =>{
         axios.get(baseUrl)
             .then(res =>{
                     Marcas.value = res.data       
-                    console.log(res.data)     
+                    //console.log(res.data)     
                 }
             )
             .catch(e => console.log(e))
@@ -24,7 +24,7 @@ export const useBrandStore =  defineStore('brandStore', () =>{
 
     const addBrand = ( name) =>{
         
-        console.log(name)
+        //console.log(name)
             
         Swal.fire({
             title: '¿Agregar Marca?',
@@ -84,7 +84,7 @@ export const useBrandStore =  defineStore('brandStore', () =>{
                             '',
                             'success'
                         )
-                        console.log(res)
+                        //console.log(res)
                         getBrands()
                     })
                     .catch(e => {
@@ -129,7 +129,7 @@ export const useBrandStore =  defineStore('brandStore', () =>{
                             'success'
                         )
 
-                        console.log(res)
+                        //console.log(res)
                         getBrands()
                     })
                     .catch(e => {

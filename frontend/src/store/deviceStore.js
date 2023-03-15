@@ -16,7 +16,7 @@ export const useDeviceStore =  defineStore('deviceStore', () =>{
         axios.get(baseUrl)
             .then(res =>{
                     Devices.value = res.data       
-                    console.log(res.data)      
+                    //console.log(res.data)      
                 }
             )
             .catch(e => console.log(e))
@@ -42,7 +42,7 @@ export const useDeviceStore =  defineStore('deviceStore', () =>{
                                 '',
                                 'success'
                             )
-                        console.log(res)
+                        //.log(res)
                         getDevices()
                 }
             )
@@ -61,7 +61,7 @@ export const useDeviceStore =  defineStore('deviceStore', () =>{
 
     const updateDevice = (id, name, serial, description, brand_id, reference_id) =>{
         
-        console.log(id, name, serial, description, isNewEquipment, brand_id, reference_id)
+        //console.log(id, name, serial, description, isNewEquipment, brand_id, reference_id)
 
         Swal.fire({
             title: 'Actualizar Dispositivo?',
@@ -81,7 +81,7 @@ export const useDeviceStore =  defineStore('deviceStore', () =>{
                                 '',
                                 'success'
                             )
-                console.log(res)
+                    //console.log(res)
                 getDevices()
             }
         )
@@ -124,7 +124,7 @@ export const useDeviceStore =  defineStore('deviceStore', () =>{
                                 '',
                                 'success'
                             )
-                console.log(res)
+                //console.log(res)
                 getDevices()
             })
             .catch(e => { 
@@ -158,7 +158,7 @@ export const useDeviceStore =  defineStore('deviceStore', () =>{
 
     const assignar = (employee_id, employee_name,equipment_id, equipment_name,   serial, description, brand_id, reference_id) =>{
         let notes = "asd"
-        console.log(employee_id, employee_name, equipment_id, equipment_name,  serial, description, brand_id, reference_id)
+        //console.log(employee_id, employee_name, equipment_id, equipment_name,  serial, description, brand_id, reference_id)
         
         Swal.fire({
             title: 'Asignar Dispositivo?',
@@ -178,7 +178,7 @@ export const useDeviceStore =  defineStore('deviceStore', () =>{
                                 employee_name+ " es resoponseble del equipo",
                                 'success'
                             )
-                        console.log(res)
+                        //console.log(res)
                          getDevices()
                 }
             )
