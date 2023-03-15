@@ -1,34 +1,60 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import axios from "axios";
 
 
 export const useDeviceStore =  defineStore('deviceStore', () =>{
     //variables
-    let Devices = ref([
-        {id: 0, nombre:"Galaxy S20", serial:"1233", marca: "Samsung", referencia:"celular"},
-        {id: 1, nombre:"Samrt Q30", serial:"2344", marca: "LG", referencia:"televisor"},
-        {id: 2, nombre:"Iphone 14", serial:"3455", marca: "Apple", referencia:"celular"}
-        ])
+    const baseUrl = 'https://shy-tan-dolphin-robe.cyclic.app/api/v1/equipments'
+    const headers = { "Authorization": "Bearer "}; 
+    let Devices = ref([])
 
     //funciones
     const getDevices = () =>{
-         
+        axios.get(baseUrl)
+        .then(res =>{
+                Devices.value = res.data       
+                console.log(res.data)     
+            }
+        )
+        .catch(e => console.log(e))
 
     }
 
-    const addDevice = ( nombre) =>{
-         
-        getDevices()
+    const addDevice = ( name, serial, description, brand_id, reference_id,isNewEquipment) =>{
+        axios.post(baseUrl,{ name, serial, description, isNewEquipment, brand_id, reference_id, isNewEquipment}, {headers})
+        .then(res=> {
+                console.log(res)
+                getDevices()
+            }
+        )
+        .catch(e => console.log(e))  
     }
 
-    const updateDevice = (id, nombre) =>{
-
-        getDevices()
+    const updateDevice = (id, name, serial, description, brand_id, reference_id) =>{
+        let isNewEquipment = true
+        console.log(id, name, serial, description, isNewEquipment, brand_id, reference_id)
+        axios.patch(baseUrl,{id, name, serial, description, isNewEquipment, brand_id, reference_id}, {headers})
+        .then(res=> {
+                console.log(res)
+                getDevices()
+            }
+        )
+        .catch(e => console.log(e))  
     }
 
     const deleteDevice = (id) =>{
-
-        getDevices()
+        console.log('id:',id)
+        const headers = { 
+            'Authorization': 'Bearer my-token',
+            'My-Custom-Header': 'foobar'
+        };
+        axios.delete(baseUrl, {data:{'id':id}})
+            .then(res => {
+                console.log(res)
+                getDevices()
+            })
+            .catch(e => console.log("error:",e))  
     }
 
     //return

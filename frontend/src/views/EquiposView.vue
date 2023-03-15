@@ -21,13 +21,13 @@
                     </thead>
                     <tbody v-for="item in buscar" :key="item">
                         <tr> 
-                            <td>{{ item.nombre }}</td>
-                            <td>{{ item.marca }}</td>
-                            <td>{{ item.referencia }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.brand_id.name }}</td>
+                            <td>{{ item.reference_id.name }}</td>
                             <td>{{ item.serial }}</td>
                             <td>
-                                <button class="btn btn-primary "><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button class="btn btn-danger "><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn btn-primary" @click="showEdit(item._id, item.name, item.brand_id, item.reference_id, item.serial, item.description)"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="btn btn-danger " @click="deleteDevice(item._id)"><i class="fa-solid fa-trash"></i></button>
                                 <button class="btn btn-success"  @click="showAsig()">Asignar</button>
                             </td> 
                         </tr> 
@@ -43,21 +43,21 @@
                         <div class="row justify-content-between text-start">
                             <div class="form-group col-6 flex-column d-flex"> 
                                 <label class="form-control-label px-3 tex">Nombre: </label> 
-                                <input type="text" > 
+                                <input type="text" v-model="name" > 
                             </div>
                             <div class="form-group col-6 flex-column d-flex">
                                 <label class="form-control-label px-3">Serial:</label> 
-                                <input type="text"  > 
+                                <input type="text"  v-model="serial"> 
                             </div>
                         </div>
                         <div class="row justify-content-between text-start">
                             <div class="form-group col-6 flex-column d-flex"> 
                                 <label class="form-control-label px-3 tex">Marca: </label> 
-                                <input type="text" v-model="searchMarca">
+                                <input type="text" v-model="searchMarca" @click="marcaSelected=false">
                                 <div v-if="BMarcas.length" class="col-2" style="position: absolute; width: 40%; margin-top: 5rem;">
-                                    <ul class="list-group "> 
+                                    <ul v-if="!marcaSelected" class="list-group "> 
                                         <li  class="list-group-item list-group-item-action" v-for="item in BMarcas" :key="item"  @click="selectMarca(item)">
-                                            {{ item.nombre }}
+                                            {{ item.name }}
                                         </li>
                                     </ul>
     
@@ -65,23 +65,32 @@
                             </div>
                             <div class="form-group col-6 flex-column d-flex">
                                 <label class="form-control-label px-3">Referencia:</label> 
-                                <input type="text" v-model="searchRef" > 
+                                <input type="text" v-model="searchRef" @click="refSelected=false"> 
                                 <div v-if="BRefs.length" class="col-2" style="position: absolute; width: 40%; margin-top: 5rem;">
-                                    <ul class="list-group "> 
+                                    <ul v-if="!refSelected" class="list-group "> 
                                         <li  class="list-group-item list-group-item-action" v-for="item in BRefs" :key="item"  @click="selectRef(item)">
-                                            {{ item.nombre}}
+                                            {{ item.name}}
                                         </li>
                                     </ul>
     
                                 </div> 
                             </div>  
                         </div>
+                        <div class="row justify-content-between text-start">
+                            <div class="form-group col-12 flex-column d-flex"> 
+                                <label class="form-control-label px-3 tex">Descripción: </label> 
+                                <input type="text" v-model="description" > 
+                            </div> 
+                        </div>
                         
                         <div class="row justify-content-end">
                             <div class="form-group col-sm-3"> 
-                                <button  class="btn-block btn-primary">
+                                <button v-if="!editar" class="btn-block btn-primary" @click="createDevice(name, serial, description, brand_id, reference_id)">
                                     Guardar
                                 </button> 
+                                <button v-else class="btn-block btn-success" @click="updateDevice(device_id, name, serial, description, brand_id, reference_id)">
+                                    Editar
+                                </button>  
                             </div>
                         </div>
                     </Modal> 
@@ -94,11 +103,11 @@
                         <div class="row justify-content-between text-start">
                             <div class="form-group col-12 flex-column d-flex"> 
                                 <label class="form-control-label px-3 tex">Empleado: </label> 
-                                <input type="text" v-model="searchEmployer"> 
+                                <input type="text" v-model="searchEmployer" @click="empSelected=false"> 
                                 <div v-if="BEmpl.length" class="col-2" style="position: absolute; width: 80%; margin-top: 5rem;">
-                                    <ul class="list-group "> 
+                                    <ul v-if="!empSelected" class="list-group "> 
                                         <li  class="list-group-item list-group-item-action" v-for="item in BEmpl" :key="item"  @click="selectEmpl(item)">
-                                            {{ item.nombres}}
+                                            {{ item.name}}
                                         </li>
                                     </ul>
     
@@ -108,11 +117,13 @@
                         
                         <div class="row justify-content-end">
                             <div class="form-group col-sm-3"> 
-                                <button  class="btn-block btn-primary">
+                                <button   class="btn-block btn-primary">
                                     Guardar
-                                </button> 
+                                </button>    
                             </div>
                         </div>
+                        
+                        
                     </Modal> 
                 </div>
             </div>
@@ -124,7 +135,7 @@
  
  <script setup>
     import Modal from '@/components/Modal.vue';
-    import {ref, computed} from 'vue' 
+    import {ref, computed, onMounted} from 'vue' 
     import {storeToRefs} from 'pinia'
     import {useAppStore} from '@/store/appStore.js'
     import {useDeviceStore} from '@/store/deviceStore.js'
@@ -134,68 +145,134 @@
 
     //refs
     const useRef = useRefStore()
-    let {Refs} = storeToRefs(useRef)
+    let {Refs} = storeToRefs(useRef) 
+    const {getRefs} =useRef
+
     //marcas
     const useBrand = useBrandStore()
+    const {getBrands} =useBrand
     let {Marcas} = storeToRefs(useBrand)
+
     //empleados
     const useEmploye = useEmployeStore()
+    const {getUsers} = useEmploye
     let {Users} = storeToRefs(useEmploye)
 
-
-    const useApp = useAppStore()
-    //funciones
-    const {openModal} = useApp
-    //variables
+    //app
+    const useApp = useAppStore() 
+    const {openModal} = useApp 
     let {showModal} = storeToRefs(useApp)
 
-    const useDevice = useDeviceStore()
-    //funciones
-    const {getDevices} = useDevice
-    //variables
+    //device
+    const useDevice = useDeviceStore() 
+    const {getDevices,addDevice, updateDevice, deleteDevice} = useDevice 
     let {Devices} = storeToRefs(useDevice)
 
-    
 
     let registro = ref(false)
     let asignar = ref(false)
+    let editar = ref(false)
     let searchElement = ref("")
      
     let searchMarca = ref(undefined)
     let searchRef = ref(undefined)
+    let brand_id = ref(undefined)
+    let reference_id = ref(undefined)
     let searchEmployer = ref(undefined)
+    let name = ref(undefined)
+    let serial = ref(undefined)
+    let description = ref(undefined)
+    let device_id = ref(undefined)
+    let marcaSelected = ref(false)
+    let refSelected = ref(false)
+    let empSelected = ref(false)
     
-    const selectMarca = (item)=>{
-        searchMarca.value = item.nombre
-        BMarcas=[]
+    onMounted(() => {
+        getDevices()
+        getBrands()
+        getUsers()
+        getRefs()
+    })
+
+    const createDevice = (name, serial, description, brand_id, reference_id) => {
+        console.log(name, serial, description, brand_id, reference_id)
+        addDevice(name, serial, description, brand_id, reference_id, true)
+    }
+
+    const selectMarca = (item)=>{ 
+        searchMarca.value = item.name
+        brand_id.value = item._id
+        marcaSelected.value = true
     }
 
     const selectRef = (item)=>{
-        searchRef.value = item.nombre
-        BRefs=[]
+        searchRef.value = item.name
+        reference_id.value = item._id
+        refSelected.value = true
     }
 
     const selectEmpl = (item)=>{
-        searchEmployer.value = item.nombres 
-        BEmpl=[]
+        searchEmployer.value = item.name 
+        empSelected.value = true
     }
 
-    const showRegis = () =>{
-        asignar.value = false
-        registro.value = false
-        registro.value = !registro.value
+    const showForm = ()=>{ 
+        searchEmployer.value = undefined
+        searchRef.value = undefined
+        searchMarca.value = undefined
+        name.value = undefined
+        serial.value = undefined 
+        device_id.value = undefined
+        description.value = undefined
+        editar.value =  false 
+        marcaSelected.value = false
+        refSelected.value = false
+        empSelected.value = false
+        registro.value =  !registro.value
+        asignar.value =  !registro.value
+        editar.value =  false
         openModal()
+
     }
 
-    const showAsig = () =>{
-        registro.value = false
-        asignar.value = false
-        asignar.value = !asignar.value
+    const showRegis = () =>{  
+        registro.value =  false
+        asignar.value =  true  
+        editar.value = false
+        showForm()
+    }
+
+    const showAsig = () =>{  
+        registro.value =  true
+        editar.value =  true
+        asignar.value =  false 
+        empSelected.value = true
+        showForm()
+    }
+
+    const showEdit = (id, nombre, marca, referencia, serie, descripcion) =>{  
+        console.log(nombre, serie, marca, referencia)
+        searchRef.value = referencia.name
+        reference_id.value = referencia._id
+        searchMarca.value = marca.name
+        brand_id.value = marca._id
+        name.value = nombre
+        serial.value = serie 
+        device_id.value = id
+        description.value = descripcion
+        editar.value =  true  
+        asignar.value =  false 
+        registro.value =  true  
+        marcaSelected.value = true
+        refSelected.value = true
         openModal()
     }
 
     let buscar = computed(() => { 
            console.log(searchElement.value)
+           
+          
+
            if (searchElement.value === '' || searchElement.value === undefined) {
                return Devices.value
            }
@@ -205,10 +282,10 @@
                 return Devices.value.filter(item => {  
                     if (
                         (
-                            item.nombre.toLowerCase().includes(searchElement.value.toLowerCase()) ||
+                            item.name.toLowerCase().includes(searchElement.value.toLowerCase()) ||
                             item.serial.toLowerCase().includes(searchElement.value.toLowerCase()) ||
-                            item.marca.toLowerCase().includes(searchElement.value.toLowerCase()) ||
-                            item.referencia.toLowerCase().includes(searchElement.value.toLowerCase()) 
+                            item.brand_id.name.toLowerCase().includes(searchElement.value.toLowerCase()) ||
+                            item.reference_id.name.toLowerCase().includes(searchElement.value.toLowerCase()) 
                         )
                         
                         && matches < 10
@@ -225,17 +302,16 @@
 
        
     })
-    
+
     let BMarcas = computed(() => { 
-           console.log(searchMarca.value)
-           if (searchMarca.value === '' || searchMarca.value === undefined) {
+           console.log(searchMarca.value)  
+           if (searchMarca.value === '' || searchMarca.value === undefined ) { 
                return []
            }
            let matches = 0
-           if(searchMarca.value.length>0){
-              
+           if(searchMarca.value.length>0 ){
                 return Marcas.value.filter(item => {  
-                    if (item.nombre.toLowerCase().includes(searchMarca.value.toLowerCase()) 
+                    if (item.name.toLowerCase().includes(searchMarca.value.toLowerCase()) 
                         && matches < 10
                     ) { 
                         matches++ 
@@ -246,7 +322,8 @@
                          
            }else{
                return []
-           }    
+           }  
+            
 
        
     })
@@ -260,7 +337,7 @@
            if(searchRef.value.length>0){
               
                 return Refs.value.filter(item => {  
-                    if (item.nombre.toLowerCase().includes(searchRef.value.toLowerCase()) 
+                    if (item.name.toLowerCase().includes(searchRef.value.toLowerCase()) 
                         && matches < 10
                     ) { 
                         matches++ 
@@ -277,15 +354,21 @@
     })
 
     let BEmpl = computed(() => { 
-           console.log(searchEmployer.value)
-           if (searchEmployer.value === '' || searchEmployer.value === undefined) {
+        console.log(searchEmployer.value)
+        if (searchEmployer.value === '' || searchEmployer.value === undefined) {
                return []
            }
            let matches = 0
            if(searchEmployer.value.length>0){
               
                 return Users.value.filter(item => {  
-                    if (item.nombres.toLowerCase().includes(searchEmployer.value.toLowerCase()) 
+                    if (
+                        (item.name.toLowerCase().includes(searchEmployer.value.toLowerCase())||
+                        item.surname.toLowerCase().includes(searchEmployer.value.toLowerCase())||
+                        item.email.toLowerCase().includes(searchEmployer.value.toLowerCase())||
+                        item.phone.toLowerCase().includes(searchEmployer.value.toLowerCase())||
+                        item.identification.toLowerCase().includes(searchEmployer.value.toLowerCase())
+                        )
                         && matches < 10
                     ) { 
                         matches++ 

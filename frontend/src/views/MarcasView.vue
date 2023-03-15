@@ -9,23 +9,30 @@
                 <button class="btn btn-outline-secondary" ><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
             <div class="border rounded my-2">
-                <table class="table  ">
+                <table class="table  " v-if="buscar.length>0">
                     <thead>
                         <tr>
-                        <th scope="col">Nombre de Marca</th> 
-                        <th scope="col">Opción</th>
+                            <th scope="col">Nombre de Marca</th> 
+                            <th scope="col">Opción</th>
                         </tr>
                     </thead>
                     <tbody v-for="item in buscar" :key="item">
                         <tr> 
-                            <td>{{ item.nombre }}</td>
+                            <td>{{ item.name }}</td>
                             <td>
-                                <button class="btn btn-primary "><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button class="btn btn-danger "><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn btn-primary "
+                                @click="editB(item)"
+                                ><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="btn btn-danger " 
+                                @click="deleteBrand(item._id)"
+                                ><i class="fa-solid fa-trash"></i></button>
                             </td> 
                         </tr> 
                     </tbody>
                 </table>
+                <div v-else>
+                    <h1>No se encontraron registros</h1>
+                </div>
 
             </div>
         </div>
@@ -36,17 +43,29 @@
                 <div class="row justify-content-between text-start">
                     <div class="form-group col-12 flex-column d-flex"> 
                         <label class="form-control-label px-3 tex">Nombre de la Nueva marca: </label> 
-                        <input type="text" > 
+                        <input type="text" v-model="name"> 
                     </div> 
                 </div> 
 
-                <div class="row justify-content-end">
+                <div v-if="!edit" class="row justify-content-end">
                     <div class="form-group col-sm-3"> 
-                        <button  class="btn-block btn-primary">
+                        <button  class="btn-block btn-primary"
+                        @click="addBrand(name), showForm()">
                             Guardar
                         </button> 
                     </div>
                 </div>
+                
+                <div v-else class="row justify-content-end">
+                    <div class="form-group col-sm-3"> 
+                        <button  class="btn-block btn-success"
+                        @click="updateBrand(id, name), showForm()">
+                            Editar
+                        </button> 
+                    </div>
+                </div>
+
+                 
             </Modal> 
         </div>
         <!-- -->
@@ -55,30 +74,46 @@
  </template>
  
  <script setup>
-    import Modal from '@/components/Modal.vue';
-    import {ref, computed} from 'vue'
+    import Modal from '@/components/Modal.vue'; 
+    import {ref, computed, onMounted} from 'vue'
     import {storeToRefs} from 'pinia'
     import {useAppStore} from '@/store/appStore.js'
     import {useBrandStore} from '@/store/brandStore.js'
- 
-    let searchElement = ref("")
-
-    const useApp = useAppStore()
-    //funciones
-    const {openModal} = useApp
-    //variables
+    //useapp
+    const useApp = useAppStore() 
+    const {openModal} = useApp 
     let {showModal} = storeToRefs(useApp)
-
-    const useBrand = useBrandStore()
-    //funciones
-    const {getBrands} = useBrand
-    //variables
+    //useBrand
+    const useBrand = useBrandStore() 
+    const {getBrands, addBrand, updateBrand, deleteBrand} = useBrand 
     let {Marcas} = storeToRefs(useBrand)
 
+    //varModle
+    let searchElement = ref("")
+    let name = ref(undefined)
+    let id = ref(undefined)
+    let edit = ref(false)
+
     const showForm = () =>{
+        edit.value = false
+        name.value  = undefined
+        id.value = undefined
         openModal()
     }
+
+    onMounted(() => {
+        getBrands()
+    })
     
+    const editB = (item) =>{
+        name.value = item.name
+        id.value = item._id
+        edit.value = true
+        console.log(name.value, id.value)
+        openModal()
+    }
+
+
 
     let buscar = computed(() => { 
            console.log(searchElement.value)
@@ -90,7 +125,7 @@
               
                 return Marcas.value.filter(item => {  
                     if (
-                        (item.nombre.toLowerCase().includes(searchElement.value.toLowerCase()) 
+                        (item.name.toLowerCase().includes(searchElement.value.toLowerCase()) 
                         )
                         && matches < 10
                     ) { 

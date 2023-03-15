@@ -18,10 +18,14 @@
                     </thead>
                     <tbody v-for="item in buscar" :key="item">
                         <tr> 
-                            <td>{{ item.nombre }}</td>
+                            <td>{{ item.name }}</td>
                             <td>
-                                <button class="btn btn-primary "><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button class="btn btn-danger "><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn btn-primary "
+                                @click="editR(item._id, item.name)"
+                                ><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="btn btn-danger "
+                                @click="deleteR(item._id)"
+                                ><i class="fa-solid fa-trash"></i></button>
                             </td> 
                         </tr> 
                     </tbody>
@@ -35,18 +39,28 @@
                     <div class="row justify-content-between text-start">
                         <div class="form-group col-12 flex-column d-flex"> 
                             <label class="form-control-label px-3 tex">Nombre de la nueva Referencia: </label> 
-                            <input type="text" placeholder="telefono, tablet, celular..."> 
+                            <input type="text" placeholder="telefono, tablet, celular..." v-model="name"> 
                         </div> 
                     </div> 
                     
-                    <div class="row justify-content-end">
+                    <div v-if="!edit" class="row justify-content-end">
                         <div class="form-group col-sm-3"> 
-                            <button  class="btn-block btn-primary">
+                            <button  class="btn-block btn-primary"
+                            @click="addRefs(name), showForm()">
                                 Guardar
                             </button> 
                         </div>
                     </div>
-                </Modal> 
+                
+                    <div v-else class="row justify-content-end">
+                        <div class="form-group col-sm-3"> 
+                            <button  class="btn-block btn-success"
+                            @click="updateRefs(id, name), showForm()">
+                                Editar
+                            </button> 
+                        </div>
+                    </div>
+                </Modal>  
             </div>
             <!-- -->
             
@@ -56,29 +70,48 @@
     
  <script setup>
     import Modal from '@/components/Modal.vue';
-    import {ref, computed} from 'vue'
+    import {ref, computed, onMounted} from 'vue'
     import {storeToRefs} from 'pinia'
     import {useAppStore} from '@/store/appStore.js'
     import {useRefStore} from '@/store/refStore.js'
 
-    
-    let searchElement = ref("")
 
     const useApp = useAppStore()
-    //funciones
     const {openModal} = useApp
-    //variables
     let {showModal} = storeToRefs(useApp)
 
     const useRef = useRefStore()
-    //funciones
-    const {getRefs} = useRef
-    //variables
+    const {getRefs, addRefs, updateRefs, deleteRefs} = useRef
     let {Refs} = storeToRefs(useRef)
 
 
+    //varModle
+    let searchElement = ref("")
+    let name = ref(undefined)
+    let id = ref(undefined)
+    let edit = ref(false)
+
     const showForm = () =>{
+        edit.value = false
+        name.value  = undefined
+        id.value = undefined
         openModal()
+    }
+
+    onMounted(() => {
+        getRefs()
+    })
+
+    const editR = (idI, nameI) =>{
+        name.value = nameI
+        id.value = idI
+        edit.value = true
+        console.log(name.value, id.value, edit.value )
+        openModal()
+    }
+
+    const deleteR = (id) =>{
+        deleteRefs(id)
     }
 
     let buscar = computed(() => { 
@@ -91,7 +124,7 @@
               
                 return Refs.value.filter(item => {  
                     if (
-                        (item.nombre.toLowerCase().includes(searchElement.value.toLowerCase()) 
+                        (item.name.toLowerCase().includes(searchElement.value.toLowerCase()) 
                         )
                         && matches < 10
                     ) { 

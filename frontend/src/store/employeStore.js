@@ -1,34 +1,53 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
+import axios from "axios";
 
 export const useEmployeStore =  defineStore('mployeStore', () =>{
     //variables
-    let Users = ref([
-        {id: 0, nombres: "ander steven", apellidos:"cord riv", email:"ande@gmail.com", telefono:"3101010", direccion:"calle 1#2-3"},
-        {id: 1, nombres: "Cami asd", apellidos:"Pinzó dsf", email:"cami@gmail.com", telefono:"3101111", direccion:"calle 2#3-4"},
-        {id: 2, nombres: "julanito jj", apellidos:"peres hh", email:"julanito@gmail.com", telefono:"3111010", direccion:"calle 3#4-5"}
-        ])
+     const baseUrl = 'https://shy-tan-dolphin-robe.cyclic.app/api/v1/employees'
+    const headers = { "Authorization": "Bearer "}; 
+    let Users = ref([])
 
     //funciones
     const getUsers = () =>{
-         
+         axios.get(baseUrl)
+        .then(res =>{
+                Users.value = res.data       
+                console.log(res.data)     
+            }
+        )
+        .catch(e => console.log(e))
 
+    } 
+    const addUser = ( identification, name, surname, email, phone, address) =>{
+        console.log(identification, name, surname, email, phone, address)
+        axios.post(baseUrl,{identification, name, surname, address, phone, email}, {headers})
+            .then(res=> {
+                    console.log(res)
+                    getUsers()
+                }
+            )
+            .catch(e => console.log(e))
     }
 
-    const addUser = ( nombres, apellidos, email, telefono, direccion) =>{
-         
-        getUsers()
+    const updateUser = (identification, newName, newSurname, newEmail, newPhone, newAddress) =>{
+        axios.patch(baseUrl, {newName,newSurname,newAddress,newEmail,newPhone,identification}, {headers})
+            .then(res=>{
+                console.log(res)
+                getUsers()
+            })
+            .catch(e => console.log(e))
     }
 
-    const updateUser = (id, nombres, apellidos, email, telefono, direccion) =>{
-
-        getUsers()
-    }
-
-    const deleteUser = (id) =>{
-
-        getUsers()
+    const deleteUser = (identification, name, surname, email, phone, address) =>{
+        console.log(identification, name, surname, email, phone, address)
+        axios.delete(baseUrl, {data:{identification}}, {headers})
+            .then(res => {
+                console.log(res)
+                getUsers()
+            })
+            .catch(e => console.log(identification,"error:",e))
     }
 
     //return
