@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import axios from "axios";
+import Swal from 'sweetalert2'
 
 
 export const useDeviceStore =  defineStore('deviceStore', () =>{
