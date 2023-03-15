@@ -86,7 +86,7 @@
                     <div v-if="!edit" class="row justify-content-end">
                         <div class="form-group col-sm-3"> 
                             <button  class="btn-block btn-primary"
-                            @click="addUser(identification, name, surname, email, phone, address), showForm()">
+                            @click="addEmploy()">
                                 Guardar
                             </button> 
                         </div>
@@ -95,7 +95,7 @@
                     <div v-else class="row justify-content-end">
                         <div class="form-group col-sm-3"> 
                             <button  class="btn-block btn-success"
-                            @click="updateUser(identification, name, surname, email, phone, address), showForm()">
+                            @click="editEmployee()">
                                 Editar
                             </button> 
                         </div>
@@ -108,7 +108,8 @@
  </template>
  
  <script setup>
-    import Modal from '@/components/Modal.vue';  
+    import Modal from '@/components/Modal.vue'; 
+    import Swal from 'sweetalert2'  
     import {ref, computed, onMounted} from 'vue'
     import {storeToRefs} from 'pinia'
     import {useAppStore} from '@/store/appStore.js'
@@ -145,6 +146,63 @@
         openModal()
     }
 
+    const addEmploy = () =>{
+        if(
+            identification.value === undefined ||
+            name.value  === undefined ||
+            surname.value === undefined ||
+            email.value === undefined ||
+            phone.value === undefined ||
+            address.value === undefined 
+        ){
+            openModal()
+            Swal.fire(
+                'Campos incompletos',
+                '',
+                'warning'
+            ).then(
+                (result) => {
+                    if (result.isConfirmed){
+                        openModal()
+                        
+                    }
+                }
+            )
+        }else{
+            addUser(identification.value, name.value, surname.value, email.value, phone.value, address.value)
+            showForm()
+        }
+    }
+
+    const editEmployee = () =>{
+        if(
+            identification.value === "" ||
+            name.value  === "" ||
+            surname.value === "" ||
+            email.value === "" ||
+            phone.value === "" ||
+            address.value === "" 
+        ){
+            openModal()
+            Swal.fire(
+                'Campos incompletos',
+                '',
+                'warning'
+            ).then(
+                (result) => {
+                    if (result.isConfirmed){
+                        openModal()
+                        
+                    }
+                }
+            )
+        }else{
+            updateUser(identification.value, name.value, surname.value, email.value, phone.value, address.value)
+            showForm()
+        }
+    }
+
+
     onMounted(() => {
         getUsers()
     })
@@ -159,7 +217,7 @@
         edit.value=true
         openModal()
     }
-
+ 
     const deleteU = (identification ) =>{
         deleteUser(identification )
     } 
