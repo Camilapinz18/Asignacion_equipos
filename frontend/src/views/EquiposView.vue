@@ -136,6 +136,7 @@
  
  <script setup>
     import Modal from '@/components/Modal.vue';
+    import Swal from 'sweetalert2'  
     import {ref, computed, onMounted} from 'vue' 
     import {useDeviceStore} from '@/store/deviceStore.js'
     import {storeToRefs} from 'pinia'
@@ -197,9 +198,32 @@
     })
  
     const createDevice = (name, serial, description, brand_id, reference_id) => {
+        if(name === undefined ||
+         serial === undefined ||
+         description === undefined ||
+         brand_id === undefined ||
+         reference_id === undefined 
+        ){
+            Swal.fire(
+                'Campos incompletos',
+                '',
+                'warning'
+            ).then(
+                (result) => {
+                    if (result.isConfirmed){ 
+                        showForm()
+                        
+                    }
+                }
+            )
+        }else{
+            addDevice(name, serial, description, brand_id, reference_id, true)
+            showForm()
+        }
         console.log(name, serial, description, brand_id, reference_id)
-        addDevice(name, serial, description, brand_id, reference_id, true)
     }
+
+    
 
     const selectMarca = (item)=>{ 
         searchMarca.value = item.name
