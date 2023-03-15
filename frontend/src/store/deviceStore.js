@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import Swal from 'sweetalert2' 
 import axios from "axios";
-import Swal from 'sweetalert2'
 
 
 export const useDeviceStore =  defineStore('deviceStore', () =>{
@@ -13,35 +13,89 @@ export const useDeviceStore =  defineStore('deviceStore', () =>{
     //funciones
     const getDevices = () =>{
         axios.get(baseUrl)
-        .then(res =>{
-                Devices.value = res.data       
-                console.log(res.data)     
-            }
-        )
-        .catch(e => console.log(e))
+            .then(res =>{
+                    Devices.value = res.data       
+                    console.log(res.data)      
+                }
+            )
+            .catch(e => console.log(e))
 
     }
 
     const addDevice = ( name, serial, description, brand_id, reference_id,isNewEquipment) =>{
-        axios.post(baseUrl,{ name, serial, description, isNewEquipment, brand_id, reference_id, isNewEquipment}, {headers})
-        .then(res=> {
-                console.log(res)
-                getDevices()
+        Swal.fire({
+            title: '¿Agregar Dispositivo?',
+            text: "¿Desea registrar un nuevo Dispositivo?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, estoy seguro'
+            }).then((result) => {
+            if (result.isConfirmed) {   
+                //
+                axios.post(baseUrl,{ name, serial, description, isNewEquipment, brand_id, reference_id, isNewEquipment}, {headers})
+                .then(res=> {
+                        Swal.fire(
+                                'Dispositivo agregado',
+                                '',
+                                'success'
+                            )
+                        console.log(res)
+                        getDevices()
+                }
+            )
+            .catch(e => { 
+                        Swal.fire(
+                            'Error de registro',
+                            'Verifica los campos',
+                            'danger'
+                            ) 
+                        }
+                    )
+                //  
             }
-        )
-        .catch(e => console.log(e))  
+        })
     }
 
     const updateDevice = (id, name, serial, description, brand_id, reference_id) =>{
         let isNewEquipment = true
         console.log(id, name, serial, description, isNewEquipment, brand_id, reference_id)
-        axios.patch(baseUrl,{id, name, serial, description, isNewEquipment, brand_id, reference_id}, {headers})
-        .then(res=> {
+
+        Swal.fire({
+            title: 'Actualizar Dispositivo?',
+            text: "¿Desea Actualizar el Dispositivo?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, estoy seguro'
+            }).then((result) => {
+            if (result.isConfirmed) {   
+                //
+                axios.patch(baseUrl,{id, name, serial, description, isNewEquipment, brand_id, reference_id}, {headers})
+                .then(res=> {
+                        Swal.fire(
+                                'Dispositivo Actualizado',
+                                '',
+                                'success'
+                            )
                 console.log(res)
                 getDevices()
             }
         )
-        .catch(e => console.log(e))  
+        .catch(e => {
+                             
+                        Swal.fire(
+                            'Error de Proceso',
+                            'Verifica los campos',
+                            'danger'
+                            ) 
+                        }
+                    )
+                //  
+            }
+        })  
     }
 
     const deleteDevice = (id) =>{
@@ -50,12 +104,39 @@ export const useDeviceStore =  defineStore('deviceStore', () =>{
             'Authorization': 'Bearer my-token',
             'My-Custom-Header': 'foobar'
         };
-        axios.delete(baseUrl, {data:{'id':id}})
-            .then(res => {
+
+        Swal.fire({
+            title: 'Eliminar Dispositivo?',
+            text: "¿Desea Eliminar el Dispositivo?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, estoy seguro'
+            }).then((result) => {
+            if (result.isConfirmed) {   
+                //
+            axios.delete(baseUrl, {data:{'id':id}})
+                .then(res => {
+                        Swal.fire(
+                                'Dispositivo Eliminado',
+                                '',
+                                'success'
+                            )
                 console.log(res)
                 getDevices()
             })
-            .catch(e => console.log("error:",e))  
+            .catch(e => { 
+                        Swal.fire(
+                            'Error de proceso',
+                            'Intentalo de nuevo',
+                            'danger'
+                            ) 
+                        }
+                    )
+                //  
+            }
+        })
     }
 
     //return

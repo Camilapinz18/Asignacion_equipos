@@ -85,10 +85,10 @@
                         
                         <div class="row justify-content-end">
                             <div class="form-group col-sm-3"> 
-                                <button v-if="!editar" class="btn-block btn-primary" @click="createDevice(name, serial, description, brand_id, reference_id)">
+                                <button v-if="!editar" class="btn-block btn-primary" @click="createDevice(name, serial, description, brand_id, reference_id), showForm()">
                                     Guardar
                                 </button> 
-                                <button v-else class="btn-block btn-success" @click="updateDevice(device_id, name, serial, description, brand_id, reference_id)">
+                                <button v-else class="btn-block btn-success" @click="updateDevice(device_id, name, serial, description, brand_id, reference_id), showForm()">
                                     Editar
                                 </button>  
                             </div>
@@ -117,7 +117,7 @@
                         
                         <div class="row justify-content-end">
                             <div class="form-group col-sm-3"> 
-                                <button   class="btn-block btn-primary">
+                                <button   class="btn-block btn-primary" @click=" showForm()">
                                     Guardar
                                 </button>    
                             </div>
@@ -136,9 +136,9 @@
  <script setup>
     import Modal from '@/components/Modal.vue';
     import {ref, computed, onMounted} from 'vue' 
+    import {useDeviceStore} from '@/store/deviceStore.js'
     import {storeToRefs} from 'pinia'
     import {useAppStore} from '@/store/appStore.js'
-    import {useDeviceStore} from '@/store/deviceStore.js'
     import {useBrandStore} from '@/store/brandStore.js'
     import {useRefStore} from '@/store/refStore.js'
     import { useEmployeStore } from '@/store/employeStore';
@@ -168,7 +168,7 @@
     const {getDevices,addDevice, updateDevice, deleteDevice} = useDevice 
     let {Devices} = storeToRefs(useDevice)
 
-
+   
     let registro = ref(false)
     let asignar = ref(false)
     let editar = ref(false)
@@ -191,9 +191,9 @@
         getDevices()
         getBrands()
         getUsers()
-        getRefs()
+        getRefs() 
     })
-
+ 
     const createDevice = (name, serial, description, brand_id, reference_id) => {
         console.log(name, serial, description, brand_id, reference_id)
         addDevice(name, serial, description, brand_id, reference_id, true)
@@ -274,6 +274,7 @@
           
 
            if (searchElement.value === '' || searchElement.value === undefined) {
+            console.log("devices",Devices.value)
                return Devices.value
            }
            let matches = 0
@@ -382,8 +383,7 @@
            }    
 
        
-    })
-
+    }) 
 
  </script>
  

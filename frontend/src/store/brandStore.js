@@ -11,6 +11,7 @@ export const useBrandStore =  defineStore('brandStore', () =>{
 
     //funciones
     const getBrands = () =>{
+      
         axios.get(baseUrl)
             .then(res =>{
                     Marcas.value = res.data       
@@ -22,24 +23,86 @@ export const useBrandStore =  defineStore('brandStore', () =>{
     }
 
     const addBrand = ( name) =>{
+        
         console.log(name)
-        axios.post(baseUrl,{ name}, {headers})
-            .then(res=> {
-                    console.log(res)
-                    getBrands()
-                }
-            )
-            .catch(e => console.log(e)) 
+            
+        Swal.fire({
+            title: '¿Agregar Marca?',
+            text: "¿Desea registrar esta nueva Marca?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, estoy seguro'
+            }).then((result) => {
+            if (result.isConfirmed) {   
+                //
+                axios.post(baseUrl,{ name}, {headers})
+                    .then(res=> {
+                            Swal.fire(
+                                'Marca agregada',
+                                '',
+                                'success'
+                            )
+                            console.log(res)
+                            getBrands()
+                        }
+                    )
+                    .catch(e => {
+                             
+                        Swal.fire(
+                            'Error de proceso',
+                            'intentalo de nuevo',
+                            'danger'
+                            )
+                            
+                        }
+                    )
+                // 
+            }
+        })
+
+       
     }
 
     const updateBrand = (id, newName) =>{
-         axios.patch(baseUrl, {id, newName}, {headers})
-            .then(res=>{
-                console.log(res)
-                getBrands()
-            })
-            .catch(e => console.log(e)) 
+        Swal.fire({
+            title: 'Actualizar Marca?',
+            text: "¿Desea actualizar esta  Marca?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, estoy seguro'
+            }).then((result) => {
+            if (result.isConfirmed) {   
+                //
+                axios.patch(baseUrl, {id, newName}, {headers})
+                    .then(res=>{
+                        Swal.fire(
+                            'Marca Actualizada',
+                            '',
+                            'success'
+                        )
+                        console.log(res)
+                        getBrands()
+                    })
+                    .catch(e => {
+                             
+                        Swal.fire(
+                            'Error de proceso',
+                            'intentalo de nuevo',
+                            'danger'
+                            )
+                            
+                        }
+                    )
+                // 
+            }
+        })
+
     }
+
 
     const deleteBrand = (id) =>{
         console.log('id:',id)
@@ -47,12 +110,43 @@ export const useBrandStore =  defineStore('brandStore', () =>{
             'Authorization': 'Bearer my-token',
             'My-Custom-Header': 'foobar'
         };
-        axios.delete(baseUrl, {data:{'id':id}})
-            .then(res => {
-                console.log(res)
-                getBrands()
-            })
-            .catch(e => console.log("error:",e), {headers}) 
+
+        Swal.fire({
+            title: 'Eliminar Marca?',
+            text: "¿Desea Eliminar esta  Marca?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, estoy seguro'
+            }).then((result) => {
+            if (result.isConfirmed) { 
+                axios.delete(baseUrl, {data:{'id':id}})
+                    .then(res => {
+                        Swal.fire(
+                            'Marca Eliminada',
+                            '',
+                            'success'
+                        )
+
+                        console.log(res)
+                        getBrands()
+                    })
+                    .catch(e => {
+                             
+                        Swal.fire(
+                            'Error de proceso',
+                            'intentalo de nuevo',
+                            'danger'
+                            )
+                            
+                        }
+                    )
+                // 
+            }
+        }) 
+
+
     }
 
     //return

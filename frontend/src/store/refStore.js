@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import axios from "axios";
+import Swal from 'sweetalert2'
 
 
 export const useRefStore =  defineStore('refStore', () =>{
@@ -22,32 +23,115 @@ export const useRefStore =  defineStore('refStore', () =>{
     }
 
     const addRefs = ( name) =>{
-        axios.post(baseUrl,{ name}, {headers})
-        .then(res=> {
-                console.log(res) 
-                getRefs()
+        Swal.fire({
+            title: '¿Agregar Referencia?',
+            text: "¿Desea registrar una nueva Referencia?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, estoy seguro'
+            }).then((result) => {
+            if (result.isConfirmed) {   
+                //        
+                axios.post(baseUrl,{ name}, {headers})
+                .then(res=> {       
+                        Swal.fire(
+                            'Referencia agregada',
+                            '',
+                            'success'
+                        )
+                        console.log(res) 
+                        getRefs()
+                    }
+                )
+                .catch(e => { 
+                        Swal.fire(
+                            'Error de proceso',
+                            'Verifica los campos',
+                            'danger'
+                            )
+                            
+                        }
+                    )
+                //  
             }
-        )
-        .catch(e => console.log(e)) 
+        })
+
     }
 
     const updateRefs = (id, newName) =>{
-        axios.patch(baseUrl, {id,newName})
-        .then(res=>{
-            console.log(res) 
-            getRefs()
+        Swal.fire({
+            title: 'Actualizar Referencia?',
+            text: "¿Desea Actualizar la Referencia?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, estoy seguro'
+            }).then((result) => {
+            if (result.isConfirmed) {   
+                //        
+                axios.patch(baseUrl, {id,newName})
+                    .then(res=>{     
+                        Swal.fire(
+                            'Referencia Actualizada',
+                            '',
+                            'success'
+                        )
+                        console.log(res) 
+                        getRefs()
+                }) 
+                .catch(e => { 
+                        Swal.fire(
+                            'Error de proceso',
+                            'Verifica los campos',
+                            'danger'
+                            )
+                            
+                        }
+                    )
+                //  
+            }
         })
-        .catch(e => console.log(e)) 
     }
 
     const deleteRefs = (id) =>{
         console.log('id:',id)
-        axios.delete(baseUrl, {data:{'id':id}})
-            .then(res => {
-                console.log(res)
-                getRefs() 
-            })
-            .catch(e => console.log("error:",e)) 
+
+        Swal.fire({
+            title: 'Eliminar Referencia?',
+            text: "¿Desea Eliminar la Referencia?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, estoy seguro'
+            }).then((result) => {
+            if (result.isConfirmed) {   
+                //        
+                axios.delete(baseUrl, {data:{'id':id}})
+                    .then(res => {
+                        Swal.fire(
+                                    'Referencia Eliminada',
+                                    '',
+                                    'success'
+                                )
+                        console.log(res)
+                        getRefs() 
+                    })
+                    .catch(e => { 
+                        Swal.fire(
+                            'Error de proceso',
+                            'intentalo de nuevo',
+                            'danger'
+                            )
+                            
+                        }
+                    )
+                //  
+            }
+        }) 
     }
 
     //return
