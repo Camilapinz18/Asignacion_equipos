@@ -227,7 +227,7 @@
     let searchElement = ref("")
 
     let buscar = computed(() => { 
-           console.log(searchElement.value)
+           //console.log(searchElement.value)
            if (searchElement.value === '' || searchElement.value === undefined) {
                return Users.value
            }

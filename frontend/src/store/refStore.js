@@ -15,7 +15,7 @@ export const useRefStore =  defineStore('refStore', () =>{
          axios.get(baseUrl)
         .then(res =>{
                 Refs.value = res.data       
-                console.log(res.data)     
+                //console.log(res.data)     
             }
         )
         .catch(e => console.log(e))
@@ -41,7 +41,7 @@ export const useRefStore =  defineStore('refStore', () =>{
                             '',
                             'success'
                         )
-                        console.log(res) 
+                        //console.log(res) 
                         getRefs()
                     }
                 )
@@ -79,7 +79,7 @@ export const useRefStore =  defineStore('refStore', () =>{
                             '',
                             'success'
                         )
-                        console.log(res) 
+                        //console.log(res) 
                         getRefs()
                 }) 
                 .catch(e => { 
@@ -97,7 +97,7 @@ export const useRefStore =  defineStore('refStore', () =>{
     }
 
     const deleteRefs = (id) =>{
-        console.log('id:',id)
+        //console.log('id:',id)
 
         Swal.fire({
             title: 'Eliminar Referencia?',
@@ -117,7 +117,7 @@ export const useRefStore =  defineStore('refStore', () =>{
                                     '',
                                     'success'
                                 )
-                        console.log(res)
+                        //console.log(res)
                         getRefs() 
                     })
                     .catch(e => { 
