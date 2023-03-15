@@ -132,9 +132,9 @@
  
 
    let buscar = computed(() => { 
-          console.log(searchElement.value)
+          //console.log(searchElement.value)
           if (searchElement.value === '' || searchElement.value === undefined) {
-           console.log("devices",Devices.value)
+           //console.log("devices",Devices.value)
               return Devices.value
           }
           let matches = 0
@@ -167,7 +167,7 @@
    
 
    let BEmpl = computed(() => { 
-       console.log(searchEmployer.value)
+       //console.log(searchEmployer.value)
        if (searchEmployer.value === '' || searchEmployer.value === undefined) {
               return []
           }

@@ -14,14 +14,14 @@ export const useEmployeStore =  defineStore('mployeStore', () =>{
          axios.get(baseUrl)
         .then(res =>{
                 Users.value = res.data       
-                console.log(res.data)     
+                //console.log(res.data)     
             }
         )
         .catch(e => console.log(e))
 
     } 
     const addUser = ( identification, name, surname, email, phone, address) =>{
-        console.log(identification, name, surname, email, phone, address)
+        //console.log(identification, name, surname, email, phone, address)
         Swal.fire({
             title: '¿Agregar Empleado?',
             text: "¿Desea registrar un nuevo Empleado?",
@@ -40,7 +40,7 @@ export const useEmployeStore =  defineStore('mployeStore', () =>{
                                 '',
                                 'success'
                             )
-                            console.log(res)
+                            //console.log(res)
                             getUsers()
                         }
                     )
@@ -80,7 +80,7 @@ export const useEmployeStore =  defineStore('mployeStore', () =>{
                                 '',
                                 'success'
                             )
-                        console.log(res)
+                        //console.log(res)
                         getUsers()
                     })
                     .catch(e => {
@@ -100,7 +100,7 @@ export const useEmployeStore =  defineStore('mployeStore', () =>{
     }
 
     const deleteUser = (identification, name, surname, email, phone, address) =>{
-        console.log(identification, name, surname, email, phone, address)
+        //console.log(identification, name, surname, email, phone, address)
          Swal.fire({
             title: 'Eliminar Empleado?',
             text: "¿Desea eliminar este Empleado?",
@@ -119,7 +119,7 @@ export const useEmployeStore =  defineStore('mployeStore', () =>{
                                 '',
                                 'success'
                             )
-                        console.log(res)
+                        //console.log(res)
                         getUsers()
                     })
                     .catch(e => {
