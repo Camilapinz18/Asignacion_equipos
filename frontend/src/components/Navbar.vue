@@ -9,7 +9,7 @@
                     <router-link to="/" class="nav-link">Empleados</router-link > 
                     <router-link to="/marcas"  class="nav-link" >Marcas</router-link >
                     <router-link to="/ref" class="nav-link">Referencias</router-link > 
-                    <router-link to="/equipos" class="nav-link">Equipos</router-link >  
+                    <router-link to="/equipos" class="nav-link">Equipos</router-link >   
                 </div>
             </div>
         </div>

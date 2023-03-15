@@ -5,7 +5,7 @@ import axios from "axios";
 
 export const useEmployeStore =  defineStore('mployeStore', () =>{
     //variables
-     const baseUrl = 'https://shy-tan-dolphin-robe.cyclic.app/api/v1/employees'
+    const baseUrl = 'https://shy-tan-dolphin-robe.cyclic.app/api/v1/employees'
     const headers = { "Authorization": "Bearer "}; 
     let Users = ref([])
 

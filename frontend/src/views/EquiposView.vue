@@ -28,7 +28,8 @@
                             <td>
                                 <button class="btn btn-primary" @click="showEdit(item._id, item.name, item.brand_id, item.reference_id, item.serial, item.description)"><i class="fa-solid fa-pen-to-square"></i></button>
                                 <button class="btn btn-danger " @click="deleteDevice(item._id)"><i class="fa-solid fa-trash"></i></button>
-                                <button class="btn btn-success"  @click="showAsig()">Asignar</button>
+                                <button v-if="!item.isAssigned" class="btn btn-success"  @click="showAsig(item._id, item.name, item.brand_id, item.reference_id, item.serial, item.description)">Asignar</button>
+                                <button v-else class="btn btn-success"  disabled>Asignar</button>
                             </td> 
                         </tr> 
                     </tbody>
@@ -117,7 +118,7 @@
                         
                         <div class="row justify-content-end">
                             <div class="form-group col-sm-3"> 
-                                <button   class="btn-block btn-primary" @click=" showForm()">
+                                <button   class="btn-block btn-primary" @click=" assignar(employee_id, searchEmployer, device_id,  name, serial, description, brand_id, reference_id  ),showForm()">
                                     Guardar
                                 </button>    
                             </div>
@@ -165,7 +166,7 @@
 
     //device
     const useDevice = useDeviceStore() 
-    const {getDevices,addDevice, updateDevice, deleteDevice} = useDevice 
+    const {getDevices,addDevice, updateDevice, deleteDevice, assignar} = useDevice 
     let {Devices} = storeToRefs(useDevice)
 
    
@@ -186,6 +187,7 @@
     let marcaSelected = ref(false)
     let refSelected = ref(false)
     let empSelected = ref(false)
+    let employee_id = ref(undefined)
     
     onMounted(() => {
         getDevices()
@@ -213,6 +215,7 @@
 
     const selectEmpl = (item)=>{
         searchEmployer.value = item.name 
+        employee_id.value = item._id
         empSelected.value = true
     }
 
@@ -242,12 +245,21 @@
         showForm()
     }
 
-    const showAsig = () =>{  
-        registro.value =  true
-        editar.value =  true
-        asignar.value =  false 
+    const showAsig = (id, nombre, marca, referencia, serie, descripcion) =>{  
+        registro.value =  false
+        editar.value =  false
+        asignar.value =  true 
         empSelected.value = true
-        showForm()
+        searchRef.value = referencia.name
+        reference_id.value = referencia._id
+        searchMarca.value = marca.name
+        brand_id.value = marca._id
+        name.value = nombre
+        serial.value = serie 
+        device_id.value = id
+        description.value = descripcion 
+        
+        openModal()
     }
 
     const showEdit = (id, nombre, marca, referencia, serie, descripcion) =>{  
