@@ -20,7 +20,7 @@ const routes = [
     path: '/equipos',
     name: 'equipos', 
     component: () => import(/* webpackChunkName: "Equipos" */ '../views/EquiposView.vue')
-  },
+  }, 
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound', 
