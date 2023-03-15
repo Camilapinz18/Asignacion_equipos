@@ -16,7 +16,7 @@ const validateCreateBrand = [
 ]
 
 const validateUpdateBrand = [
-  check('name')
+  check('newName')
     .exists()
     .not()
     .isEmpty()

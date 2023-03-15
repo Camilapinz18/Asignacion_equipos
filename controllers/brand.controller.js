@@ -37,6 +37,8 @@ const createBrand = async (req, res) => {
 const updateBrand = async (req, res) => {
   const { newName, id } = req.body
 
+  console.log("New Name",newName)
+
   try {
     const brandExists = await Brand.findById(id)
 
