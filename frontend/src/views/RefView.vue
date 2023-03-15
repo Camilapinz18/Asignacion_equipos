@@ -46,7 +46,7 @@
                     <div v-if="!edit" class="row justify-content-end">
                         <div class="form-group col-sm-3"> 
                             <button  class="btn-block btn-primary"
-                            @click="addRefs(name), showForm()">
+                            @click="addRef(name)">
                                 Guardar
                             </button> 
                         </div>
@@ -55,7 +55,7 @@
                     <div v-else class="row justify-content-end">
                         <div class="form-group col-sm-3"> 
                             <button  class="btn-block btn-success"
-                            @click="updateRefs(id, name), showForm()">
+                            @click="editRef(id, name)">
                                 Editar
                             </button> 
                         </div>
@@ -70,6 +70,7 @@
     
  <script setup>
     import Modal from '@/components/Modal.vue';
+    import Swal from 'sweetalert2'  
     import {ref, computed, onMounted} from 'vue'
     import {storeToRefs} from 'pinia'
     import {useAppStore} from '@/store/appStore.js'
@@ -112,6 +113,48 @@
 
     const deleteR = (id) =>{
         deleteRefs(id)
+    }
+
+    const addRef = () =>{
+        if(name.value  === undefined ){
+            openModal()
+            Swal.fire(
+                'Campos incompletos',
+                '',
+                'warning'
+            ).then(
+                (result) => {
+                    if (result.isConfirmed){
+                        openModal()
+                        
+                    }
+                }
+            )
+        }else{
+            addRefs( name.value)
+            showForm()
+        }
+    }
+
+    const editRef = () =>{
+        if(name.value  === "" ){
+            openModal()
+            Swal.fire(
+                'Campos incompletos',
+                '',
+                'warning'
+            ).then(
+                (result) => {
+                    if (result.isConfirmed){
+                        openModal()
+                        
+                    }
+                }
+            )
+        }else{
+            updateRefs(id.value, name.value)
+            showForm()
+        }
     }
 
     let buscar = computed(() => { 

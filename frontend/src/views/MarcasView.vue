@@ -50,7 +50,7 @@
                 <div v-if="!edit" class="row justify-content-end">
                     <div class="form-group col-sm-3"> 
                         <button  class="btn-block btn-primary"
-                        @click="addBrand(name), showForm()">
+                        @click="addMarca(name)">
                             Guardar
                         </button> 
                     </div>
@@ -59,7 +59,7 @@
                 <div v-else class="row justify-content-end">
                     <div class="form-group col-sm-3"> 
                         <button  class="btn-block btn-success"
-                        @click="updateBrand(id, name), showForm()">
+                        @click="editMarca(id, name)">
                             Editar
                         </button> 
                     </div>
@@ -75,6 +75,7 @@
  
  <script setup>
     import Modal from '@/components/Modal.vue'; 
+    import Swal from 'sweetalert2'  
     import {ref, computed, onMounted} from 'vue'
     import {storeToRefs} from 'pinia'
     import {useAppStore} from '@/store/appStore.js'
@@ -113,7 +114,47 @@
         openModal()
     }
 
+    const addMarca = () =>{
+        if(name.value  === undefined ){
+            openModal()
+            Swal.fire(
+                'Campos incompletos',
+                '',
+                'warning'
+            ).then(
+                (result) => {
+                    if (result.isConfirmed){
+                        openModal()
+                        
+                    }
+                }
+            )
+        }else{
+            addBrand( name.value)
+            showForm()
+        }
+    }
 
+    const editMarca = () =>{
+        if(name.value  === "" ){
+            openModal()
+            Swal.fire(
+                'Campos incompletos',
+                '',
+                'warning'
+            ).then(
+                (result) => {
+                    if (result.isConfirmed){
+                        openModal()
+                        
+                    }
+                }
+            )
+        }else{
+            updateBrand(id.value, name.value)
+            showForm()
+        }
+    }
 
     let buscar = computed(() => { 
            console.log(searchElement.value)
