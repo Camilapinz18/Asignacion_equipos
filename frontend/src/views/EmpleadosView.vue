@@ -134,7 +134,13 @@
     let phone = ref(undefined)
     let address = ref(undefined)
     let edit = ref(false)
+    let searchElement = ref("")
 
+    onMounted(() => {
+        getUsers()
+    })
+
+    //abrir / cerar form + reset inputs
     const showForm = () =>{
         edit.value = false
         identification.value = undefined
@@ -146,6 +152,7 @@
         openModal()
     }
 
+    //agregar empleado
     const addEmploy = () =>{
         if(
             identification.value === undefined ||
@@ -174,6 +181,7 @@
         }
     }
 
+    //editar empleado
     const editEmployee = () =>{
         if(
             identification.value === "" ||
@@ -201,12 +209,8 @@
             showForm()
         }
     }
-
-
-    onMounted(() => {
-        getUsers()
-    })
-
+ 
+    //abrir el modal para editar y asignar los valores en sus inputs
     const editEmploy = (identificationI, nameI, surnameI, emailI, phoneI, addressI) =>{
         identification.value = identificationI
         name.value  = nameI
@@ -218,14 +222,12 @@
         openModal()
     }
  
+    //eliminar usuario
     const deleteU = (identification ) =>{
         deleteUser(identification )
     } 
-
     
-
-    let searchElement = ref("")
-
+    //filtro de busqueda
     let buscar = computed(() => { 
            //console.log(searchElement.value)
            if (searchElement.value === '' || searchElement.value === undefined) {
