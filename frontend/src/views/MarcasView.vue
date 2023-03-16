@@ -95,6 +95,8 @@
     let id = ref(undefined)
     let edit = ref(false)
 
+    
+    //abrir / cerar form + reset inputs
     const showForm = () =>{
         edit.value = false
         name.value  = undefined
