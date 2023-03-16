@@ -92,6 +92,12 @@
     let id = ref(undefined)
     let edit = ref(false)
 
+    //obtener data
+    onMounted(() => {
+        getRefs()
+    })
+    
+    //abrir / cerar form + reset inputs
     const showForm = () =>{
         edit.value = false
         name.value  = undefined
@@ -99,10 +105,7 @@
         openModal()
     }
 
-    onMounted(() => {
-        getRefs()
-    })
-
+    //editar
     const editR = (idI, nameI) =>{
         name.value = nameI
         id.value = idI
@@ -111,10 +114,12 @@
         openModal()
     }
 
+    //eliminar
     const deleteR = (id) =>{
         deleteRefs(id)
     }
 
+    //agregar
     const addRef = () =>{
         if(name.value  === undefined ){
             openModal()
@@ -136,6 +141,7 @@
         }
     }
 
+    //editar
     const editRef = () =>{
         if(name.value  === "" ){
             openModal()
@@ -157,6 +163,7 @@
         }
     }
 
+    //bucar ref
     let buscar = computed(() => { 
            //.log(searchElement.value)
            if (searchElement.value === '' || searchElement.value === undefined) {

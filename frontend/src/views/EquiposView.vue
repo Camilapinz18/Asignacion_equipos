@@ -89,7 +89,7 @@
                                 <button v-if="!editar" class="btn-block btn-primary" @click="createDevice(name, serial, description, brand_id, reference_id)">
                                     Guardar
                                 </button> 
-                                <button v-else class="btn-block btn-success" @click="updateDevice(device_id, name, serial, description, brand_id, reference_id), showForm()">
+                                <button v-else class="btn-block btn-success" @click="editDevice(device_id, name, serial, description, brand_id, reference_id)">
                                     Editar
                                 </button>  
                             </div>
@@ -97,8 +97,7 @@
                     </Modal> 
                 </div>
                 
-                <!-- -->
-
+                <!-- --> 
                 <div v-if="asignar">
                     <Modal tittle="Asignar  equipo">
                         <div class="row justify-content-between text-start">
@@ -118,7 +117,7 @@
                         
                         <div class="row justify-content-end">
                             <div class="form-group col-sm-3"> 
-                                <button   class="btn-block btn-primary" @click=" assignar(employee_id, searchEmployer, device_id,  name, serial, description, brand_id, reference_id  ),showForm()">
+                                <button   class="btn-block btn-primary" @click=" asigDevice(employee_id, searchEmployer, device_id,  name, serial, description, brand_id, reference_id  )">
                                     Guardar
                                 </button>    
                             </div>
@@ -170,12 +169,11 @@
     const {getDevices,addDevice, updateDevice, deleteDevice, assignar} = useDevice 
     let {Devices} = storeToRefs(useDevice)
 
-   
+    //vars
     let registro = ref(false)
     let asignar = ref(false)
     let editar = ref(false)
-    let searchElement = ref("")
-     
+    let searchElement = ref("") 
     let searchMarca = ref(undefined)
     let searchRef = ref(undefined)
     let brand_id = ref(undefined)
@@ -190,6 +188,7 @@
     let empSelected = ref(false)
     let employee_id = ref(undefined)
     
+    //cargar datos
     onMounted(() => {
         getDevices()
         getBrands()
@@ -197,6 +196,7 @@
         getRefs() 
     })
  
+    //crear dispositivos
     const createDevice = (name, serial, description, brand_id, reference_id) => {
         if(name === undefined ||
          serial === undefined ||
@@ -219,30 +219,64 @@
         }else{
             addDevice(name, serial, description, brand_id, reference_id, true)
             showForm()
-        }
-        //console.log(name, serial, description, brand_id, reference_id)
+        } 
     }
 
-    
+    //asignar dispositivos
+    const asigDevice  = (employee_id, searchEmployer, device_id,  name, serial, description, brand_id, reference_id) =>{ 
+            if(employee_id===undefined){
+                openModal()
+                Swal.fire(
+                'Campo empleado incorrectos',
+                '',
+                'warning').then(result => openModal())
+            }else{
+                assignar(employee_id, searchEmployer, device_id,  name, serial, description, brand_id, reference_id) 
+                showForm()
+            }
+    }
 
+    //editar dispositivo
+    const editDevice  =(device_id, name, serial, description, brand_id, reference_id) =>{ 
+            if(device_id === undefined || device_id === "" ||
+             name, serial === undefined || name, serial === "" ||
+             description === undefined || description === "" ||
+             brand_id === undefined || brand_id === "" ||
+             reference_id === undefined || reference_id === "" 
+            ){
+                openModal()
+                Swal.fire(
+                'Campos incompletos',
+                '',
+                'warning').then(result => openModal())
+            }else{
+                updateDevice(device_id, name, serial, description, brand_id, reference_id),
+                showForm()
+            }
+    }
+
+    //select marca
     const selectMarca = (item)=>{ 
         searchMarca.value = item.name
         brand_id.value = item._id
         marcaSelected.value = true
     }
 
+    //select ref
     const selectRef = (item)=>{
         searchRef.value = item.name
         reference_id.value = item._id
         refSelected.value = true
     }
 
+    //select empleado
     const selectEmpl = (item)=>{
         searchEmployer.value = item.name 
         employee_id.value = item._id
         empSelected.value = true
     }
 
+    //abrir cerrar form y resetar los inputs
     const showForm = ()=>{ 
         searchEmployer.value = undefined
         searchRef.value = undefined
@@ -262,6 +296,7 @@
 
     }
 
+    //abrir registros
     const showRegis = () =>{  
         registro.value =  false
         asignar.value =  true  
@@ -269,6 +304,7 @@
         showForm()
     }
 
+    //abrir asignación
     const showAsig = (id, nombre, marca, referencia, serie, descripcion) =>{  
         registro.value =  false
         editar.value =  false
@@ -286,6 +322,7 @@
         openModal()
     }
 
+    //abrir edit y llenar los inputs
     const showEdit = (id, nombre, marca, referencia, serie, descripcion) =>{  
         //console.log(nombre, serie, marca, referencia)
         searchRef.value = referencia.name
@@ -304,6 +341,7 @@
         openModal()
     }
 
+    //buscar dispositivo
     let buscar = computed(() => { 
            //console.log(searchElement.value)
             
@@ -338,6 +376,7 @@
        
     })
 
+    //buscar marca
     let BMarcas = computed(() => { 
            //console.log(searchMarca.value)  
            if (searchMarca.value === '' || searchMarca.value === undefined ) { 
@@ -363,6 +402,7 @@
        
     })
 
+    //buscar refs
     let BRefs = computed(() => { 
            //console.log(searchRef.value)
            if (searchRef.value === '' || searchRef.value === undefined) {
@@ -388,6 +428,7 @@
        
     })
 
+    //buscar empleado
     let BEmpl = computed(() => { 
         //console.log(searchEmployer.value)
         if (searchEmployer.value === '' || searchEmployer.value === undefined) {
